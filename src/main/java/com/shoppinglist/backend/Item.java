@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-//a
 @Entity
 public class Item {
     private @Id @GeneratedValue Long id;
