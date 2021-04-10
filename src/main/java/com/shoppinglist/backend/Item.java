@@ -1,13 +1,12 @@
 package com.shoppinglist.backend;
 
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "items")
 public class Item {
-    private @Id @GeneratedValue Long id;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) int id;
     private String name;
     private int amount;
     private String user;
@@ -53,11 +52,11 @@ public class Item {
         this.user = user;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }
