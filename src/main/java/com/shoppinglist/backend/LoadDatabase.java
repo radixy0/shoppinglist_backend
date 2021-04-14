@@ -13,7 +13,9 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(ItemRepository repository){
         return args -> {
-            log.info("Preloading " + repository.save(new Item("a",2,"b")));
+            if(repository.findAll().size() == 0) {
+                log.info("Database seems empty, Preloading " + repository.save(new Item("a", 2, "b")));
+            }
         };
     }
 
