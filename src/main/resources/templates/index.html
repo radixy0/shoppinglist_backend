@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+henlo
+<div id="itemList">
+    content: {{ items }}
+    <table>
+        <tr>
+            <th>item</th>
+            <th>amount</th>
+            <th>user</th>
+        </tr>
+        <tr v-for="item in items">
+            <item_card
+            v-bind:item="item"
+            v-bind:key="item.id"></item_card>
+        </tr>        
+
+    </table>
+</div>
+<script src="henlo.js"></script>
+</body>
+</html>
