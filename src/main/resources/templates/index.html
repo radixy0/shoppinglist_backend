@@ -7,9 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-henlo
 <div id="itemList">
-    content: {{ items }}
     <table>
         <tr>
             <th>item</th>
@@ -17,11 +15,12 @@ henlo
             <th>user</th>
         </tr>
         <tr v-for="item in items">
-            <item_card
-            v-bind:item="item"
-            v-bind:key="item.id"></item_card>
-        </tr>        
-
+            <template v-if="item.id">
+                <item_card
+                    v-bind:item="item"
+                    v-bind:key="item.id"></item_card>
+            </template>
+        </tr>             
     </table>
 </div>
 <script src="henlo.js"></script>

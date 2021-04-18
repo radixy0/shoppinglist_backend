@@ -1,16 +1,10 @@
 const Items = {
-  data() {
-  
-    return {
-      items: [
-      ]
-    }
+  data() {  
+    return {items: null}
   },
-  mounted() {
-    axios
-    .get('/items')
-    .then(response => (items = response.data))
-   }
+  mounted(){
+    axios.get('/items').then(response => (this.items = response.data))
+  }
 }
 
 const app = Vue.createApp(Items)
@@ -19,11 +13,9 @@ const app = Vue.createApp(Items)
 app.component('item_card', {
   props: ['item'],
   template: `
-    <tr>
       <td>{{ item.name }}</td>
       <td>{{ item.amount }}</td>
       <td>{{ item.user }}</td>
-    </tr>
   `
 });
 
