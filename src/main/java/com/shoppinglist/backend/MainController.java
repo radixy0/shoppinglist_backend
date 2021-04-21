@@ -34,6 +34,7 @@ public class MainController {
         return "henlo.js";
     }
 
+    @GetMapping("/json")
     @PostMapping("/json")
     public String json(Model model){
         return "example.json";
@@ -42,6 +43,7 @@ public class MainController {
     @Autowired
     private HttpServletRequest request;
 
+    @GetMapping("/echo")
     @PostMapping(value = "/echo", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Map<String, Object>> echoBack(@RequestBody(required = false) byte[] rawBody) throws IOException {
 
