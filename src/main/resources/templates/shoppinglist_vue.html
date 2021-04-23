@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="itemList">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>item</th>
+            <th>amount</th>
+            <th>user</th>
+            <th> </th>
+        </tr>
+        <tr v-for="item in items">
+            <template v-if="item.id">
+                <item_card
+                    v-bind:item="item"
+                    v-bind:key="item.id"></item_card>
+            </template>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="text" value="" id="textbox_newItem"></td>
+            <td><input type="text" value="" id="textbox_newAmount"></td>
+            <td><button id="submitButton" v-on:click="submitNewItem()">submit!</button></td>
+        </tr>          
+    </table>
+</div>
+<script src="henlo_vue.js"></script>
+</body>
+</html>

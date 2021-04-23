@@ -4,11 +4,14 @@ package com.shoppinglist.backend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,14 +27,28 @@ public class MainController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
+    @GetMapping("/error")
+    public String errorPage(Model model){
+        return "error.html";
+    }
     @GetMapping("/")
     public String index(Model model){
         return "index";
     }
 
-    @GetMapping("/henlo.js")
-    public String henlo(Model model){
-        return "henlo.js";
+    @Autowired
+    ResourceLoader resourceLoader;
+    @GetMapping("/{filename}.{fileextension}")
+    public String htmlandJShandler(@PathVariable String filename, @PathVariable String fileextension, Model model){
+        if(fileextension.equals("html") || fileextension.equals("js")){
+            log.info("got html or js request: "+filename+"."+fileextension);
+            Resource resource = resourceLoader.getResource("classpath:/templates/"+filename+"."+fileextension);
+            if(resource.exists()) {
+                return filename + "." + fileextension;
+            }
+            else return "error";
+        }
+        return "error";
     }
 
     @GetMapping("/json")
