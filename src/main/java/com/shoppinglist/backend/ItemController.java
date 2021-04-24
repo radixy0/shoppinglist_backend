@@ -21,8 +21,9 @@ public class ItemController {
     // end::get-aggregate-root[]
 
     @PostMapping("/items")
-    Item newItem(@RequestBody Item newItem){
-        return repository.save(newItem);
+    List<Item> newItem(@RequestBody Item newItem){
+        repository.save(newItem);
+        return all();
     }
 
     @GetMapping("/items/{id}")
@@ -45,7 +46,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/items/{id}")
-    void deleteItem(@PathVariable int id){
+    List<Item> deleteItem(@PathVariable int id){
         repository.deleteById(id);
+        return all();
     }
 }

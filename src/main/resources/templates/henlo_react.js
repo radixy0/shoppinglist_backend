@@ -5,16 +5,51 @@ const e = React.createElement;
 class ItemTable extends React.Component{
     constructor(props) {
         super(props);
-        let listFromAPI=this.getItemsFromAPI()       
-        console.log(listFromAPI);
         this.state = {
-            itemList: listFromAPI
+            itemList: [],
+            itemFieldValue: "new item",
+            amountFieldValue: 1
         };
+        this.refresh();
+        
+        this.handleAdd=this.handleAdd.bind(this);
+        this.handleDelete=this.handleDelete.bind(this);
+        this.handleItemFieldChange=this.handleItemFieldChange.bind(this);
+        this.handleAmountFieldChange=this.handleAmountFieldChange.bind(this);
+        this.printInfo=this.printInfo.bind(this);
     }
-    getItemsFromAPI(){
+    refresh(){
         console.log("refresh");
-        let response = axios.get('/items').then(response => (this.items = response.data.json()));
-        return response;
+        axios.get('/items').then(response => {this.setItemList(response.data)});
+    }
+    setItemList(newList){
+        this.setState({itemList: newList});
+    }
+    handleDelete(id){
+        console.log("handling delete: "+id);
+        axios.delete('/items/'+id).then(
+            response => {this.setItemList(response.data)}
+        );
+    }
+    handleAdd(){
+        console.log("handling add");
+        axios.post('/items',{
+            name: this.state.itemFieldValue,
+            amount: this.state.amountFieldValue,
+            user: "test"
+          }).then(
+              response => {this.setItemList(response.data)}
+          );
+    }
+    handleItemFieldChange(event){
+        this.setState({ itemFieldValue: event.target.value });
+    }
+    handleAmountFieldChange(event){
+        this.setState({ amountFieldValue: event.target.value });
+    }
+    printInfo(){
+        console.log("state:");
+        console.log(this.state);
     }
     render(){
         return(
@@ -31,7 +66,22 @@ class ItemTable extends React.Component{
                     ),
                     e("tbody",null,
                         this.state.itemList.map(listEntry => (
-                                e(ItemRow, {item:listEntry, key:listEntry.id},null)
+                                e(ItemRow, {item:listEntry, key:listEntry.id, parent:this},null)
+                            )
+                        )
+                    ),
+                    e("tfoot",null,
+                        e("tr",null,
+                            e("td",null,""),
+                            e("td",null,
+                                e("input",{type:"text", value: this.state.itemFieldValue, onChange: this.handleItemFieldChange},null)
+                            ),
+                            e("td",null,
+                                e("input",{type:"number", value: this.state.amountFieldValue, onChange: this.handleAmountFieldChange},null)
+                            ),
+                            e("td",null,""),
+                            e("td",null,
+                                e("button",{onClick: this.handleAdd},"Add")
                             )
                         )
                     )
@@ -41,15 +91,26 @@ class ItemTable extends React.Component{
     }
 }
 
-class ItemRow extends React.Component { //props: item
-  render() {
-    let item=this.props.item
+class ItemRow extends React.Component { //props: item, parent
+    constructor(props) {
+        super(props);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
 
+    handleDelete(id){
+        this.props.parent.handleDelete(this.props.item.id);
+    }
+  
+    render() {
+    let item=this.props.item
     return e('tr',null,
         e('td',null,item.id),
         e('td',null,item.name),
         e('td',null,item.amount),
-        e('td',null,item.user)
+        e('td',null,item.user),
+        e('td',null,
+            e('button',{onClick: this.handleDelete},"X")
+        )
     )
   }
 }
