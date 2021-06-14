@@ -52,8 +52,15 @@ public class MainController {
     }
 
     @GetMapping("/json")
-    @PostMapping("/json")
-    public String json(Model model){
+    public String jsonGET(){
+        log.info("got json GET request");
+        return "example.json";
+    }
+
+    @PostMapping(value="/json",consumes = "application/json", produces = "application/json")
+    public String jsonPOST(@RequestBody(required=false) byte[] rawbody){
+        String content = rawbody != null ? new String(rawbody) : null;
+        log.info("got json POST request with content: " + content);
         return "example.json";
     }
 
@@ -61,8 +68,7 @@ public class MainController {
     private HttpServletRequest request;
 
     @GetMapping("/echo")
-    @PostMapping(value = "/echo", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Map<String, Object>> echoBack(@RequestBody(required = false) byte[] rawBody) throws IOException {
+    public ResponseEntity<Map<String, Object>> echoBackGET(@RequestBody(required = false) byte[] rawBody) throws IOException {
 
         Map<String, String> headers = new HashMap<String, String>();
         for (String headerName : Collections.list(request.getHeaderNames())) {
@@ -77,7 +83,57 @@ public class MainController {
         responseMap.put("parameters", request.getParameterMap());
         responseMap.put("path", request.getServletPath());
         responseMap.put("body", rawBody != null ? new String(rawBody) : null);
-        log.info("Echo Service received request");
+        log.info("Echo Service received GET request");
         return ResponseEntity.status(HttpStatus.OK).body(responseMap);
     }
+
+    @PostMapping(value = "/echo", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Map<String, Object>> echoBackPOST(@RequestBody(required = false) byte[] rawBody) throws IOException {
+
+        Map<String, String> headers = new HashMap<String, String>();
+        for (String headerName : Collections.list(request.getHeaderNames())) {
+            headers.put(headerName, request.getHeader(headerName));
+        }
+
+        Map<String, Object> responseMap = new HashMap<String,Object>();
+        responseMap.put("protocol", request.getProtocol());
+        responseMap.put("method", request.getMethod());
+        responseMap.put("headers", headers);
+        responseMap.put("cookies", request.getCookies());
+        responseMap.put("parameters", request.getParameterMap());
+        responseMap.put("path", request.getServletPath());
+        responseMap.put("body", rawBody != null ? new String(rawBody) : null);
+        log.info("Echo Service received POST request");
+        return ResponseEntity.status(HttpStatus.OK).body(responseMap);
+    }
+
+    @PostMapping(value="/v2/list",consumes = "application/json", produces = "application/json")
+    public String v2list(@RequestBody(required=false) byte[] rawbody){
+        String content = rawbody != null ? new String(rawbody) : null;
+        log.info("got json POST request with content: " + content);
+        return "example.json";
+    }
+
+    @PostMapping(value="/v1/list",consumes = "application/json", produces = "application/json")
+    public String v1list(@RequestBody(required=false) byte[] rawbody){
+        String content = rawbody != null ? new String(rawbody) : null;
+        log.info("got json POST request with content: " + content);
+        return "example2.json";
+    }
+
+    @PostMapping(value="/v1/**",consumes = "application/json", produces = "application/json")
+    public String v1echo(@RequestBody(required=false) byte[] rawbody){
+        String content = rawbody != null ? new String(rawbody) : null;
+        log.info("got json POST request with content: " + content);
+        return "got request to: "+request.getRequestURL() + "with content: "+content;
+    }
+
+    @PostMapping(value="/v2/*",consumes = "application/json", produces = "application/json")
+    public String v2echo(@RequestBody(required=false) byte[] rawbody){
+        String content = rawbody != null ? new String(rawbody) : null;
+        log.info("got json POST request with content: " + content);
+        return "got request to: "+request.getRequestURL() + "with content: "+content;
+    }
+
+
 }
